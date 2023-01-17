@@ -1,0 +1,17 @@
+#!/bin/sh
+
+{
+while true
+do
+	feh --bg-fill --randomize $QQWM_PATH/background/*
+  sleep 5m
+done
+}&
+
+fcitx5 -d &
+
+picom --config $QQWM_PATH/config/picomrc -b &
+
+xmodmap $QQWM_PATH/config/xmodmaprc &
+
+slstatus &
