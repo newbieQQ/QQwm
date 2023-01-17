@@ -5,7 +5,6 @@
 corner-radius = 12.0;
 rounded-corners-exclude = [
   #"window_type = 'normal'",
-  "class_g = 'dwm'"
 ];
 round-borders = 1;
 round-borders-exclude = [
@@ -105,7 +104,6 @@ fade-out-step = 0.03;
 # Specify a list of conditions of windows that should not be faded.
 # don't need this, we disable fading for all normal windows with wintypes: {}
 fade-exclude = [
-  "class_g = 'slop'"   # maim
 ]
 
 # Do not fade on window open/close.
@@ -155,8 +153,9 @@ focus-exclude = [
 #
 # opacity-rule = []
 opacity-rule = [
-  "80:name = 'VIM'",
-  "80:name *= 'Obsidian'",
+  "80:name   *= 'VIM'",
+  "85:name   *= 'Obsidian'",
+  "60:name   = 'st'",
 ];
 
 
@@ -221,7 +220,7 @@ blur-background-exclude = [
   # prevents picom from blurring the background
   # when taking selection screenshot with `main`
   # https://github.com/naelstrof/maim/issues/130
-  "name = 'VIM'",
+  "name *= 'VIM'",
 ];
 
 #################################
