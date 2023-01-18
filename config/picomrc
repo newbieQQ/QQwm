@@ -19,6 +19,7 @@ round-borders-exclude = [
 #    round-borders-rule = [ "2:class_g = 'URxvt'" ];
 #
 round-borders-rule = [
+  "25:name *= 'dmenu'",
 ];
 
 #################################
@@ -92,11 +93,11 @@ fading = true;
 
 # Opacity change between steps while fading in. (0.01 - 1.0, defaults to 0.028)
 # fade-in-step = 0.028
-fade-in-step = 0.03;
+fade-in-step = 0.3;
 
 # Opacity change between steps while fading out. (0.01 - 1.0, defaults to 0.03)
 # fade-out-step = 0.03
-fade-out-step = 0.03;
+fade-out-step = 0.3;
 
 # The time between steps in fade step, in milliseconds. (> 0, defaults to 10)
 # fade-delta = 10
@@ -153,9 +154,8 @@ focus-exclude = [
 #
 # opacity-rule = []
 opacity-rule = [
-  "80:name   *= 'VIM'",
   "85:name   *= 'Obsidian'",
-  "60:name   = 'st'",
+  "85:name   *= 'st'"
 ];
 
 
@@ -220,7 +220,6 @@ blur-background-exclude = [
   # prevents picom from blurring the background
   # when taking selection screenshot with `main`
   # https://github.com/naelstrof/maim/issues/130
-  "name *= 'VIM'",
 ];
 
 #################################
