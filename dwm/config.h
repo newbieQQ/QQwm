@@ -9,25 +9,26 @@ static const unsigned int tabPosY     = 1;	/* tab position on Y axis, 0 = bottom
 static const unsigned int tabPosX     = 1;	/* tab position on X axis, 0 = left, 1 = center, 2 = right */
 static const unsigned int maxWTab     = 600;	/* tab menu width */
 static const unsigned int maxHTab     = 200;	/* tab menu height */
-static const unsigned int borderpx    = 5;        /* 边界多少像素 */
+static const unsigned int borderpx    = 1;        /* 边界多少像素 */
+static const unsigned int gappx       = 12;       /* gap pixel between windows */
 static const unsigned int snap        = 32;       /* snap pixel */
 static const int showbar              = 1;        /* 0 means no bar */
 static const int topbar               = 0;        /* 0 means bottom bar */
 
 static const char *fonts[]          = { 
-  "monospace:size=10",
-  "WenQuanYi Micro Hei:size=10:type=Regular:antialias=true:autoint=true",
-  "Symbols Nerd Font:pixelsize=14:type=2048-em:antialias=true:autoint=true",
+  "monospace:size=18",
+  "WenQuanYi Micro Hei:size=18:type=Regular:antialias=true:autoint=true",
+  "Symbols Nerd Font:pixelsize=25:type=2048-em:antialias=true:autoint=true",
 };
 
 
 
-static const char dmenufont[]       = "WenQuanYi Micro Hei:size=12:type=Regular:antialias=true:autoint=true";
+static const char dmenufont[]       = "WenQuanYi Micro Hei:size=18:type=Regular:antialias=true:autoint=true";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#222222";
+static const char col_cyan[]        = "#000000";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
@@ -48,7 +49,7 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact        = 0.70; /* factor of master area size [0.05..0.95] */
+static const float mfact        = 0.60; /* factor of master area size [0.05..0.95] */
 static const int nmaster        = 1;    /* number of clients in master area */
 static const int resizehints    = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1;    /* 1 will force focus on the fullscreen window */
@@ -73,20 +74,28 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2]          = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[]    = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[]    = { "dmenu_run",
+                                     "-m", dmenumon,
+//                                  "-fn", dmenufont,
+//                                  "-nb", col_gray1,
+//                                  "-nf", col_gray3,
+//                                  "-sb", col_cyan,
+//                                  "-sf", col_gray4,
+                                     "-c", "-l", NULL};
 static const char *termcmd[]     = { "st", NULL };
 static const char *firefoxcmd[]   = { "firefox", NULL };
 static const char *obsidiancmd[] = { "obsidian", NULL };
-static const char *roficmd[]     = { "rofi", "-show", "combi"};
-static const char *flameshot[]   = { "flameshot", "gui"};
+static const char *roficmd[]     = { "rofi", "-show", "combi", NULL};
+static const char *flameshot[]   = { "flameshot", "gui", NULL};
 
 static const Key keys[] = {
   /*                              键位                                */
 	/* modifier                     key        function        argument */
 	{ ControlMask|ShiftMask,        XK_a,      spawn,          {.v = flameshot } },
-	{ ControlMask|ShiftMask,        XK_p,      spawn,          {.v = roficmd } },
-	{ MODKEY,                       XK_o,      spawn,          {.v = firefoxcmd } },
-	{ MODKEY,                       XK_i,      spawn,          {.v = obsidiancmd } },
+	{ ControlMask|ShiftMask,        XK_p,      spawn,          {.v = dmenucmd } },
+	{ ControlMask|ShiftMask,        XK_o,      spawn,          {.v = firefoxcmd } },
+	{ ControlMask|ShiftMask,        XK_i,      spawn,          {.v = obsidiancmd } },
+
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
