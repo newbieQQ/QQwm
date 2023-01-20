@@ -83,10 +83,11 @@ static const char *dmenucmd[]    = { "dmenu_run",
 //                                  "-sf", col_gray4,
                                      "-c", "-l", "8", NULL};
 static const char *termcmd[]     = { "st", NULL };
-static const char *firefoxcmd[]   = { "firefox", NULL };
+static const char *firefoxcmd[]  = { "firefox", NULL };
 static const char *obsidiancmd[] = { "obsidian", NULL };
 static const char *roficmd[]     = { "rofi", "-show", "combi", NULL};
 static const char *flameshot[]   = { "flameshot", "gui", NULL};
+static const char *QQcmd[]       = { "linuxQQ", NULL};
 
 static const Key keys[] = {
   /*                              键位                                */

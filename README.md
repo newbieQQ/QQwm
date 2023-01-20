@@ -16,6 +16,15 @@ ninja -C build
 sudo ninja -C build install
 ```
 
+## fcitx5皮肤
+```bash
+# gruvbox主题
+git clone https://github.com/ayamir/fcitx5-gruvbox
+mkdir -p ~/.local/share/fcitx5/themes/
+cd fcitx5-gruvbox
+cp -r Gruvbox-Light/ Gruvbox-Dark ~/.local/share/fcitx5/themes/
+```
+
 ## 需要安装工具
 ```
 w3m 
@@ -25,6 +34,7 @@ npm
 neovim
 lazygit
 alsa-utils
+fcitx5-im
 ```
 
 ## 需要安装字体
@@ -33,3 +43,4 @@ wqy-microhei
 ttf-nerd-fonts-symbols-2048-em
 ```
 ## neovim配置
+
