@@ -5,8 +5,8 @@
 /* alt-tab configuration */
 static const unsigned int tabModKey   = 0x40;	/* if this key is hold the alt-tab functionality stays acitve. This key must be the same as key that is used to active functin altTabStart `*/
 static const unsigned int tabCycleKey = 0x17;	/* if this key is hit the alt-tab program moves one position forward in clients stack. This key must be the same as key that is used to active functin altTabStart */
-static const unsigned int tabPosY     = 1;	/* tab position on Y axis, 0 = bottom, 1 = center, 2 = top */
-static const unsigned int tabPosX     = 1;	/* tab position on X axis, 0 = left, 1 = center, 2 = right */
+//static const unsigned int tabPosY     = 1;	/* tab position on Y axis, 0 = bottom, 1 = center, 2 = top */
+//static const unsigned int tabPosX     = 1;	/* tab position on X axis, 0 = left, 1 = center, 2 = right */
 static const unsigned int maxWTab     = 600;	/* tab menu width */
 static const unsigned int maxHTab     = 200;	/* tab menu height */
 static const unsigned int borderpx    = 1;        /* 边界多少像素 */
@@ -92,42 +92,47 @@ static const Key keys[] = {
   /*                              键位                                */
 	/* modifier                     key        function        argument */
 	{ ControlMask|Mod1Mask,         XK_a,      spawn,          {.v = flameshot } },
+
 	{ ControlMask|ShiftMask,        XK_p,      spawn,          {.v = dmenucmd } },
 	{ ControlMask|ShiftMask,        XK_o,      spawn,          {.v = firefoxcmd } },
 	{ ControlMask|ShiftMask,        XK_i,      spawn,          {.v = obsidiancmd } },
+	{ ControlMask|ShiftMask,        XK_d,      killclient,     {0} },
 
-	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
+	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
+
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
+
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
+
 	{ MODKEY|ShiftMask,             XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_q,      view,           {0} },
-	{ ControlMask|ShiftMask,        XK_d,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+//	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY,                       XK_f,      fullscreen,      {0} },
+//	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+//	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ Mod1Mask,             		    XK_Tab,    altTabStart,	   {0} },
-	TAGKEYS(                        XK_1,                      0)
-	TAGKEYS(                        XK_2,                      1)
-	TAGKEYS(                        XK_3,                      2)
-	TAGKEYS(                        XK_4,                      3)
-	TAGKEYS(                        XK_5,                      4)
-	TAGKEYS(                        XK_6,                      5)
+
+	TAGKEYS(                        XK_y,                      0)
+	TAGKEYS(                        XK_u,                      1)
+	TAGKEYS(                        XK_i,                      2)
+	TAGKEYS(                        XK_o,                      3)
+	TAGKEYS(                        XK_p,                      4)
+	TAGKEYS(                        XK_x,                      5)
+
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
+
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 };
 
