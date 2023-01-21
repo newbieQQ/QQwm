@@ -10,7 +10,7 @@ done
 
 fcitx5 -d &
 
-picom --experimental-backends --config $QQWM_PATH/config/picom.conf -b &
+picom --config $QQWM_PATH/config/picomrc -b &
 
 # xmodmap $QQWM_PATH/config/xmodmaprc &
 
