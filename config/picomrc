@@ -28,7 +28,7 @@ animation-stiffness-tag-change = 90.0;
 
 animation-window-mass = 0.4;
 animation-dampening = 15;
-animation-clamping = true;
+animation-clamping = false;
 
 #open windows
 animation-for-open-window = "zoom";
@@ -138,7 +138,7 @@ fade-delta = 10
 
 # Specify a list of conditions of windows that should not be faded.
 fade-exclude = [
-  "name *= 'fcitx5'"
+  "name *= 'fcitx5'",
 ]
 
 # Do not fade on window open/close.
@@ -204,14 +204,7 @@ blur: {
 # Exclude conditions for background blur.
 # blur-background-exclude = []
 blur-background-exclude = [
-  "window_type = 'dock'",
-  "window_type = 'desktop'",
-  "_GTK_FRAME_EXTENTS@:c",
-  "class_g = 'Chromium'",
-  "class_g = 'Discord'",
-  "class_g = 'Dunst'",
-  "name *= 'st'",
-  "class_g *?= 'slop'",
+  "name *= 'st'"
 ];
 
 #################################
@@ -221,15 +214,10 @@ blur-background-exclude = [
 # Daemonize process. Fork to background after initialization. Causes issues with certain (badly-written) drivers.
 # daemon = false
 
-# Specify the backend to use: `xrender`, `glx`, `egl` or `xr_glx_hybrid`.
+# Specify the backend to use: `xrender`, `glx`, or `xr_glx_hybrid`.
 # `xrender` is the default one.
 #
-backend = "glx"
-
-# Use higher precision during rendering, and apply dither when presenting the
-# rendered screen. Reduces banding artifacts, but might cause performance
-# degradation. Only works with OpenGL.
-dithered-present = false;
+# backend = "glx"
 
 # Enable/disable VSync.
 # vsync = true
@@ -323,7 +311,7 @@ glx-no-stencil = true;
 # glx-no-rebind-pixmap = false
 
 # Disable the use of damage information.
-# This cause the whole screen to be redrawn every time, instead of the part of the screen
+# This cause the whole screen to be redrawn everytime, instead of the part of the screen
 # has actually changed. Potentially degrades the performance, but might fix some artifacts.
 # The opposing option is use-damage
 #
@@ -340,12 +328,12 @@ xrender-sync-fence = true;
 # See `compton-default-fshader-win.glsl` and `compton-fake-transparency-fshader-win.glsl`
 # in the source tree for examples.
 #
-window-shader-fg = "default";
+# glx-fshader-win = "compton-fake-transparency-fshader-win.glsl"
 
 # Force all windows to be painted with blending. Useful if you
 # have a glx-fshader-win that could turn opaque pixels transparent.
 #
-# force-win-blend = true;
+# force-win-blend = false
 
 # Do not use EWMH to detect fullscreen windows.
 # Reverts to checking if a window is fullscreen based only on its size and coordinates.
@@ -363,12 +351,6 @@ window-shader-fg = "default";
 # instead of blending on top of them.
 #
 transparent-clipping = false;
-
-# Specify a list of conditions of windows that should never have transparent
-# clipping applied. Useful for screenshot tools, where you need to be able to
-# see through transparent parts of the window.
-#
-# transparent-clipping-exclude = []
 
 # Set the log level. Possible values are:
 #  "trace", "debug", "info", "warn", "error"
@@ -418,7 +400,7 @@ log-level = "warn";
 #     transparent, and you want shadows in those areas.
 #
 #   clip-shadow-above:::
-#     Controls whether shadows that would have been drawn above the window should
+#     Controls wether shadows that would have been drawn above the window should
 #     be clipped. Useful for dock windows that should have no shadow painted on top.
 #
 #   redir-ignore:::
@@ -432,13 +414,12 @@ wintypes:
   tooltip = { fade = true; shadow = true; opacity = 0.75; focus = true; full-shadow = false; };
   dock = { shadow = false; clip-shadow-above = true; }
   dnd = { shadow = false; }
-  popup_menu = { opacity = 0.5; }
+  popup_menu = { opacity = 0.8; }
   dropdown_menu = { opacity = 0.8; }
 };
 
 opacity-rule = [
   "80:name *= 'st' && focused",
   "50:name *= 'st' && !focused",
-  "85:name *= 'obsidian'",
-  # "100:fullscreen",
+  "100:fullscreen",
 ];
