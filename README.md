@@ -1,5 +1,5 @@
 # QQwm
-
+首先将`QQWM_PATH=$HOME/QQwm`加入/etc/environment
 ## 窗口渲染：pciom
 ```bash
 # 使用该大佬修改的picom
@@ -19,7 +19,8 @@ sudo ninja -C build install
 picom --experimental-backends --config ~/scripts/config/picom.conf
 ```
 
-## fcitx5皮肤
+## fcitx5
+### fcitx5皮肤
 ```bash
 # gruvbox主题
 git clone https://github.com/ayamir/fcitx5-gruvbox
@@ -27,9 +28,16 @@ mkdir -p ~/.local/share/fcitx5/themes/
 cd fcitx5-gruvbox
 cp -r Gruvbox-Light/ Gruvbox-Dark ~/.local/share/fcitx5/themes/
 ```
+### 解决fcitx5无法在终端输入等问题
+```bash
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx
+SDL_IM_MODULE=fcitx
+```
 
 ## 需要安装工具
-```
+```bash
 w3m 
 ranger
 nodejs
@@ -41,7 +49,7 @@ fcitx5-im
 ```
 
 ## 需要安装字体
-```
+```bash
 wqy-microhei
 ttf-nerd-fonts-symbols-2048-em
 ```
