@@ -3,10 +3,10 @@
 ## 窗口渲染：pciom
 ```bash
 # 使用该大佬修改的picom
-git clone https://github.com/FT-Labs/picom
+git clone https://github.com/yaocccc/picom.git
 
 # 复制下面得到的uthash.h去/usr/local/include
-git clone https://github.com/troydhanson/uthash
+git clone https://github.com/troydhanson/uthash.git
 
 ## 接着安装下面内容
 cd picom
@@ -14,6 +14,9 @@ rm -rf build
 LDFLAGS="-L/usr/local/lib" CPPFLAGS="-I/usr/local/include" meson --buildtype=release . build
 ninja -C build
 sudo ninja -C build install
+
+# 开启时需要添加--experimental-backends才可以开启毛玻璃特效
+picom --experimental-backends --config ~/scripts/config/picom.conf
 ```
 
 ## fcitx5皮肤
@@ -42,5 +45,3 @@ fcitx5-im
 wqy-microhei
 ttf-nerd-fonts-symbols-2048-em
 ```
-## neovim配置
-
