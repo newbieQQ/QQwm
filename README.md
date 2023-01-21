@@ -1,5 +1,5 @@
-# QQwm
-首先将`QQWM_PATH=$HOME/QQwm`加入/etc/environment
+# 改装自己的dwm-----QQwm
+首先将`QQWM_PATH=$HOME/QQwm # 可以为任意地址,只需要定义QQWM_PATH地址就好`加入/etc/environment
 ## 窗口渲染：pciom
 ```bash
 # 使用该大佬修改的picom
@@ -17,6 +17,16 @@ sudo ninja -C build install
 
 # 开启时需要添加--experimental-backends才可以开启毛玻璃特效
 picom --experimental-backends --config ~/scripts/config/picom.conf
+```
+## zsh
+还是来自yaocccc封装的omz（oh-my-zsh精简版）
+```bash
+echo "source ~/.config/omz/omz.zsh" >> ~/.zshrc
+# 需要安装fd
+# bat (可选 更好的文本预览效果)
+# exa (可选 更好的目录预览效果)
+# ueberzug (可选 可在x11终端下预览图片)
+# 具体用法地址 https://yaocc.cc/omz/
 ```
 
 ## fcitx5
