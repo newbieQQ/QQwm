@@ -172,6 +172,7 @@ inactive-opacity-override = true;
 # Specify a list of conditions of windows that should never be considered focused.
 # focus-exclude = []
 focus-exclude = [
+  "name *= 'obsidian'"
 ];
 
 # Use fixed inactive dim value, instead of adjusting according to window opacity.
@@ -421,5 +422,6 @@ wintypes:
 opacity-rule = [
   "80:name *= 'st' && focused",
   "50:name *= 'st' && !focused",
-  "100:fullscreen",
+  "80:name *= 'Obsidian' && focused",
+  "50:name *= 'Obsidian' && !focused",
 ];
