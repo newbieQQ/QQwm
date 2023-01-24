@@ -3,7 +3,7 @@
 ## 窗口渲染：pciom
 ```bash
 # 使用该大佬修改的picom
-git clone https://github.com/FT-Labs/picom.git
+git clone https://github.com/yaocccc/picom.git  --depth=1
 
 # 复制下面得到的uthash.h去/usr/local/include
 git clone https://github.com/troydhanson/uthash.git

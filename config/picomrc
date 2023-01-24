@@ -92,14 +92,6 @@ shadow-offset-y = -20;
 #
 # shadow-exclude = []
 shadow-exclude = [
-  "name = 'Notification'",
-  "class_g = 'Conky'",
-  "class_g ?= 'Notify-osd'",
-  "class_g = 'Cairo-clock'",
-  "class_g = 'dwm'",
-  "class_g = 'chromium'",
-  "class_g *?= 'slop'",
-  "_GTK_FRAME_EXTENTS@:c"
 ];
 
 # Specify a list of conditions of windows that should have no shadow painted over, such as a dock window.
@@ -137,9 +129,7 @@ fade-out-step = 0.035;
 fade-delta = 10
 
 # Specify a list of conditions of windows that should not be faded.
-fade-exclude = [
-  "name *= 'fcitx5'",
-]
+# fade-exclude = []
 
 # Do not fade on window open/close.
 # no-fading-openclose = false
@@ -154,7 +144,7 @@ fade-exclude = [
 
 
 # Opacity of inactive windows. (0.1 - 1.0, defaults to 1.0)
-# inactive-opacity = 1
+inactive-opacity = 0.8
 
 # Opacity of window titlebars and borders. (0.1 - 1.0, disabled by default)
 # frame-opacity = 1.0
@@ -164,7 +154,7 @@ fade-exclude = [
 inactive-opacity-override = true;
 
 # Default opacity for active windows. (0.0 - 1.0, defaults to 1.0)
-# active-opacity = 1.0
+active-opacity = 1.0
 
 # Dim inactive windows. (0.0 - 1.0, defaults to 0.0)
 # inactive-dim = 0.0
@@ -172,11 +162,15 @@ inactive-opacity-override = true;
 # Specify a list of conditions of windows that should never be considered focused.
 # focus-exclude = []
 focus-exclude = [
-  "name *= 'obsidian'"
 ];
 
 # Use fixed inactive dim value, instead of adjusting according to window opacity.
 # inactive-dim-fixed = 1.0
+opacity-rule = [
+  "85:name *= 'st' && focused",
+  "50:name *= 'st' && !focused",
+  "80:name *= 'Obsidian' && focused",
+];
 
 #################################
 #           Corners             #
@@ -205,7 +199,9 @@ blur: {
 # Exclude conditions for background blur.
 # blur-background-exclude = []
 blur-background-exclude = [
-  "name *= 'st'"
+  "window_type = 'dock'",
+  "window_type = 'desktop'",
+  "class_g = 'st'",
 ];
 
 #################################
@@ -410,6 +406,7 @@ log-level = "warn";
 #     set, and doesn't want certain window to cause unnecessary screen redirection,
 #     you can set this to `true`.
 #
+
 wintypes:
 {
   tooltip = { fade = true; shadow = true; opacity = 0.75; focus = true; full-shadow = false; };
@@ -419,9 +416,3 @@ wintypes:
   dropdown_menu = { opacity = 0.8; }
 };
 
-opacity-rule = [
-  "80:name *= 'st' && focused",
-  "50:name *= 'st' && !focused",
-  "80:name *= 'Obsidian' && focused",
-  "50:name *= 'Obsidian' && !focused",
-];
