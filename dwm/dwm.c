@@ -123,6 +123,7 @@ struct Monitor {
 	unsigned int seltag;
 	unsigned int sellt;
 	unsigned int tagset[2];
+	unsigned int tagapp[9];
 	int showbar;
 	int topbar;
 	Client *clients;
