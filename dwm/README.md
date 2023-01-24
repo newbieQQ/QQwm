@@ -1,2 +1,0 @@
-# QQwm-dwm
-# QQwm-dwm

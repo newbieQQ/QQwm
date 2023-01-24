@@ -127,6 +127,7 @@ struct Monitor {
 	int maxWTab;
 	int maxHTab;
 	unsigned int seltags;
+	unsigned int seltag;
 	unsigned int sellt;
 	unsigned int tagset[2];
 	int showbar;
@@ -151,6 +152,7 @@ typedef struct {
 } Rule;
 
 /* QQ defined functions */
+static void NextTag(const Arg *arg);
 
 /* function declarations */
 static void applyrules(Client *c);
@@ -253,6 +255,7 @@ static void altTabEnd();
 static void QQautostart();
 
 /* variables */
+static unsigned int borntag = 1;
 static const char autostartblocksh[] = "autostart_blocking.sh";
 static const char autostartsh[] = "autostart.sh";
 static const char broken[] = "broken";
@@ -295,6 +298,15 @@ static Window root, wmcheckwin;
 
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
+
+
+void 
+NextTag(const Arg *arg) {
+  int maxtag = (1 << LENGTH(tags)) - 1;
+  int stg = selmon->seltag;
+  Arg a = {.ui = (stg << 1) % maxtag};
+  view(&a);
+}
 
 /* function implementations */
 void
@@ -666,6 +678,7 @@ createmon(void)
 	Monitor *m;
 
 	m = ecalloc(1, sizeof(Monitor));
+  m->seltag = borntag;
 	m->tagset[0] = m->tagset[1] = 1;
 	m->mfact = mfact;
 	m->nmaster = nmaster;
@@ -2308,8 +2321,10 @@ view(const Arg *arg)
 	if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
 		return;
 	selmon->seltags ^= 1; /* toggle sel tagset */
-	if (arg->ui & TAGMASK) 
+	if (arg->ui & TAGMASK) {
 		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
+    selmon->seltag = arg->ui;
+  }
 	focus(NULL);
 	arrange(selmon);
 }
