@@ -29,7 +29,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <sys/wait.h>
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
@@ -41,7 +40,6 @@
 #include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
 #include <X11/Xft/Xft.h>
-#include <time.h>
 
 #include "drw.h"
 #include "util.h"
@@ -121,11 +119,6 @@ struct Monitor {
 	int by;               /* bar geometry */
 	int mx, my, mw, mh;   /* screen size */
 	int wx, wy, ww, wh;   /* window area  */
-	int altTabN;		  /* move that many clients forward */
-	int nTabs;			  /* number of active clients in tag */
-	int isAlt; 			  /* 1,0 */
-	int maxWTab;
-	int maxHTab;
 	unsigned int seltags;
 	unsigned int seltag;
 	unsigned int sellt;
@@ -135,10 +128,8 @@ struct Monitor {
 	Client *clients;
 	Client *sel;
 	Client *stack;
-	Client ** altsnext; /* array of all clients in the tag */
 	Monitor *next;
 	Window barwin;
-	Window tabwin;
 	const Layout *lt[2];
 };
 
@@ -150,9 +141,6 @@ typedef struct {
 	int isfloating;
 	int monitor;
 } Rule;
-
-/* QQ defined functions */
-static void NextTag(const Arg *arg);
 
 /* function declarations */
 static void applyrules(Client *c);
@@ -207,7 +195,6 @@ static void resizeclient(Client *c, int x, int y, int w, int h);
 static void resizemouse(const Arg *arg);
 static void restack(Monitor *m);
 static void run(void);
-static void runautostart(void);
 static void scan(void);
 static int sendevent(Client *c, Atom proto);
 static void sendmon(Client *c, Monitor *m);
@@ -249,18 +236,9 @@ static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
-void drawTab(int nwins, int first, Monitor *m);
-void altTabStart(const Arg *arg);
-static void altTabEnd();
-static void QQautostart();
 
 /* variables */
-static unsigned int borntag = 1;
-static const char autostartblocksh[] = "autostart_blocking.sh";
-static const char autostartsh[] = "autostart.sh";
 static const char broken[] = "broken";
-static const char dwmdir[] = "dwm";
-static const char localshare[] = ".local/share";
 static char stext[256];
 static int screen;
 static int sw, sh;           /* X display screen geometry width, height */
@@ -293,12 +271,17 @@ static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
 
+/* My Functions*/
+static void NextTag(const Arg *arg);
+static void Myscripts();
 /* configuration, allows nested code to access above variables */
 #include "config.h"
 
-/* compile-time check if all tags fit into an unsigned int bit array. */
-struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
+/* My Functions */
 
+void Myscripts() {
+  system("sh $QQWM_PATH/script/startapps");
+}
 
 void 
 NextTag(const Arg *arg) {
@@ -307,6 +290,10 @@ NextTag(const Arg *arg) {
   Arg a = {.ui = (stg << 1) % maxtag};
   view(&a);
 }
+
+
+/* compile-time check if all tags fit into an unsigned int bit array. */
+struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
 /* function implementations */
 void
@@ -344,7 +331,6 @@ applyrules(Client *c)
 		XFree(ch.res_name);
 	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
 }
-
 
 int
 applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact)
@@ -412,12 +398,6 @@ applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact)
 			*h = MIN(*h, c->maxh);
 	}
 	return *x != c->x || *y != c->y || *w != c->w || *h != c->h;
-}
-
-static void
-QQautostart()
-{
-  system("sh $QQWM_PATH/script/startapps");
 }
 
 void
@@ -517,7 +497,6 @@ cleanup(void)
 	Monitor *m;
 	size_t i;
 
-	altTabEnd();
 	view(&a);
 	selmon->lt[selmon->sellt] = &foo;
 	for (m = mons; m; m = m->next)
@@ -678,7 +657,7 @@ createmon(void)
 	Monitor *m;
 
 	m = ecalloc(1, sizeof(Monitor));
-  m->seltag = borntag;
+  m->seltag = 1;
 	m->tagset[0] = m->tagset[1] = 1;
 	m->mfact = mfact;
 	m->nmaster = nmaster;
@@ -686,7 +665,6 @@ createmon(void)
 	m->topbar = topbar;
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
-	m->nTabs = 0;
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
 	return m;
 }
@@ -1435,83 +1413,6 @@ run(void)
 }
 
 void
-runautostart(void)
-{
-	char *pathpfx;
-	char *path;
-	char *xdgdatahome;
-	char *home;
-	struct stat sb;
-
-	if ((home = getenv("HOME")) == NULL)
-		/* this is almost impossible */
-		return;
-
-	/* if $XDG_DATA_HOME is set and not empty, use $XDG_DATA_HOME/dwm,
-	 * otherwise use ~/.local/share/dwm as autostart script directory
-	 */
-	xdgdatahome = getenv("XDG_DATA_HOME");
-	if (xdgdatahome != NULL && *xdgdatahome != '\0') {
-		/* space for path segments, separators and nul */
-		pathpfx = ecalloc(1, strlen(xdgdatahome) + strlen(dwmdir) + 2);
-
-		if (sprintf(pathpfx, "%s/%s", xdgdatahome, dwmdir) <= 0) {
-			free(pathpfx);
-			return;
-		}
-	} else {
-		/* space for path segments, separators and nul */
-		pathpfx = ecalloc(1, strlen(home) + strlen(localshare)
-		                     + strlen(dwmdir) + 3);
-
-		if (sprintf(pathpfx, "%s/%s/%s", home, localshare, dwmdir) < 0) {
-			free(pathpfx);
-			return;
-		}
-	}
-
-	/* check if the autostart script directory exists */
-	if (! (stat(pathpfx, &sb) == 0 && S_ISDIR(sb.st_mode))) {
-		/* the XDG conformant path does not exist or is no directory
-		 * so we try ~/.dwm instead
-		 */
-		char *pathpfx_new = realloc(pathpfx, strlen(home) + strlen(dwmdir) + 3);
-		if(pathpfx_new == NULL) {
-			free(pathpfx);
-			return;
-		}
-		pathpfx = pathpfx_new;
-
-		if (sprintf(pathpfx, "%s/.%s", home, dwmdir) <= 0) {
-			free(pathpfx);
-			return;
-		}
-	}
-
-	/* try the blocking script first */
-	path = ecalloc(1, strlen(pathpfx) + strlen(autostartblocksh) + 2);
-	if (sprintf(path, "%s/%s", pathpfx, autostartblocksh) <= 0) {
-		free(path);
-		free(pathpfx);
-	}
-
-	if (access(path, X_OK) == 0)
-		system(path);
-
-	/* now the non-blocking script */
-	if (sprintf(path, "%s/%s", pathpfx, autostartsh) <= 0) {
-		free(path);
-		free(pathpfx);
-	}
-
-	if (access(path, X_OK) == 0)
-		system(strcat(path, " &"));
-
-	free(pathpfx);
-	free(path);
-}
-
-void
 scan(void)
 {
 	unsigned int i, num;
@@ -1794,141 +1695,6 @@ spawn(const Arg *arg)
 }
 
 void
-altTab()
-{
-	/* move to next window */
-	if (selmon->sel != NULL && selmon->sel->snext != NULL) {
-		selmon->altTabN++;
-		if (selmon->altTabN >= selmon->nTabs)
-			selmon->altTabN = 0; /* reset altTabN */
-
-		focus(selmon->altsnext[selmon->altTabN]);
-		restack(selmon);
-	}
-
-	/* redraw tab */
-	XRaiseWindow(dpy, selmon->tabwin);
-}
-
-void
-altTabEnd()
-{
-	if (selmon->isAlt == 0)
-		return;
-
-	/*
-	* move all clients between 1st and choosen position,
-	* one down in stack and put choosen client to the first position 
-	* so they remain in right order for the next time that alt-tab is used
-	*/
-	if (selmon->nTabs > 1) {
-		if (selmon->altTabN != 0) { /* if user picked original client do nothing */
-			Client *buff = selmon->altsnext[selmon->altTabN];
-			if (selmon->altTabN > 1)
-				for (int i = selmon->altTabN;i > 0;i--)
-					selmon->altsnext[i] = selmon->altsnext[i - 1];
-			else /* swap them if there are just 2 clients */
-				selmon->altsnext[selmon->altTabN] = selmon->altsnext[0];
-			selmon->altsnext[0] = buff;
-		}
-
-		/* restack clients */
-		for (int i = selmon->nTabs - 1;i >= 0;i--) {
-			focus(selmon->altsnext[i]);
-			restack(selmon);
-		}
-
-		free(selmon->altsnext); /* free list of clients */
-	}
-
-	/* turn off/destroy the window */
-	selmon->isAlt = 0;
-	selmon->nTabs = 0;
-	XUnmapWindow(dpy, selmon->tabwin);
-	XDestroyWindow(dpy, selmon->tabwin);
-}
-
-void
-altTabStart(const Arg *arg)
-{
-	selmon->altsnext = NULL;
-	if (selmon->tabwin)
-		altTabEnd();
-
-	if (selmon->isAlt == 1) {
-		altTabEnd();
-	} else {
-		selmon->isAlt = 1;
-		selmon->altTabN = 0;
-
-		Client *c;
-		Monitor *m = selmon;
-
-		m->nTabs = 0;
-		for(c = m->clients; c; c = c->next) { /* count clients */
-			if(!ISVISIBLE(c)) continue;
-			/* if (HIDDEN(c)) continue; uncomment if you're using awesomebar patch */
-
-			++m->nTabs;
-		}
-
-		if (m->nTabs > 0) {
-			m->altsnext = (Client **) malloc(m->nTabs * sizeof(Client *));
-
-			int listIndex = 0;
-			for(c = m->stack; c; c = c->snext) { /* add clients to the list */
-				if(!ISVISIBLE(c)) continue;
-				/* if (HIDDEN(c)) continue; uncomment if you're using awesomebar patch */
-
-				m->altsnext[listIndex++] = c;
-			}
-
-
-			struct timespec ts = { .tv_sec = 0, .tv_nsec = 1000000 };
-
-			/* grab keyboard (take all input from keyboard) */
-			int grabbed = 1;
-			for (int i = 0;i < 1000;i++) {
-				if (XGrabKeyboard(dpy, DefaultRootWindow(dpy), True, GrabModeAsync, GrabModeAsync, CurrentTime) == GrabSuccess)
-					break;
-				nanosleep(&ts, NULL);
-				if (i == 1000 - 1)
-					grabbed = 0;
-			}
-
-			XEvent event;
-			altTab();
-			if (grabbed == 0) {
-				altTabEnd();
-			} else {
-				while (grabbed) {
-					XNextEvent(dpy, &event);
-					if (event.type == KeyPress || event.type == KeyRelease) {
-						if (event.type == KeyRelease && event.xkey.keycode == tabModKey) { /* if super key is released break cycle */
-							break;
-						} else if (event.type == KeyPress) {
-							if (event.xkey.keycode == tabCycleKey) {/* if XK_s is pressed move to the next window */
-								altTab();
-							}
-						}
-					}
-				}
-
-				c = selmon->sel;
-				altTabEnd(); /* end the alt-tab functionality */
-				/* XUngrabKeyboard(display, time); just a reference */
-				XUngrabKeyboard(dpy, CurrentTime); /* stop taking all input from keyboard */
-				focus(c);
-        zoom(0);
-				restack(selmon);
-			}
-		} else {
-			altTabEnd(); /* end the alt-tab functionality */
-		}
-	}
-}
-
-void
 tag(const Arg *arg)
 {
 	if (selmon->sel && arg->ui & TAGMASK) {
@@ -1968,12 +1734,12 @@ tile(Monitor *m)
 			h = (m->wh - my) / (MIN(n, m->nmaster) - i) - gappx;
 			resize(c, m->wx + gappx, m->wy + my, mw - (2*c->bw) - gappx*(5-ns)/2, h - (2*c->bw), False);
 			if (my + HEIGHT(c) < m->wh)
-        my += HEIGHT(c) + gappx;
+			  my += HEIGHT(c) + gappx;
 		} else {
 			h = (m->wh - ty) / (n - i) - gappx;
 			resize(c, m->wx + mw + gappx/ns, m->wy + ty, m->ww - mw - (2*c->bw) - gappx*(5-ns)/2, h - (2*c->bw), False);
 			if (ty + HEIGHT(c) < m->wh)
-        ty += HEIGHT(c) + gappx;
+			  ty += HEIGHT(c) + gappx;
 		}
 }
 
@@ -2425,8 +2191,7 @@ main(int argc, char *argv[])
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();
-  QQautostart();
-	runautostart();
+  Myscripts();
 	run();
 	cleanup();
 	XCloseDisplay(dpy);
