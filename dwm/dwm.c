@@ -68,7 +68,7 @@ enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 
 typedef union {
-	int i;
+	int i, tagnumber;
 	unsigned int ui;
 	float f;
 	const void *v;
@@ -275,6 +275,7 @@ static Window root, wmcheckwin;
 /* My Functions*/
 static void NextTag(const Arg *arg);
 static void Myscripts();
+static void grid(Monitor *m);
 /* configuration, allows nested code to access above variables */
 #include "config.h"
 
@@ -488,6 +489,58 @@ checkotherwm(void)
 	XSync(dpy, False);
 	XSetErrorHandler(xerror);
 	XSync(dpy, False);
+}
+
+void grid(Monitor *m) {
+        unsigned int i, n;
+        unsigned int cx, cy, cw, ch;
+        unsigned int dx;
+        unsigned int cols, rows, overcols;
+        Client *c;
+
+        for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++)
+                ;
+        if (n == 0)
+                return;
+        if (n == 1) {
+                c = nexttiled(m->clients);
+                cw = (m->ww) * 0.7;
+                ch = (m->wh) * 0.65;
+                resize(c, m->mx + (m->mw - cw) / 2,
+                       m->my + (m->mh - ch) / 2, cw - 2 * c->bw,
+                       ch - 2 * c->bw, 0);
+                return;
+        }
+        if (n == 2) {
+                c = nexttiled(m->clients);
+                cw = m->ww / 2;
+                ch = m->wh * 0.65;
+                resize(c, m->mx, m->my + (m->mh - ch) / 2,
+                       cw - 2 * c->bw, ch - 2 * c->bw, 0);
+                resize(nexttiled(c->next), m->mx + cw,
+                       m->my + (m->mh - ch) / 2, cw - 2 * c->bw,
+                       ch - 2 * c->bw, 0);
+                return;
+        }
+
+        for (cols = 0; cols <= n / 2; cols++)
+                if (cols * cols >= n)
+                        break;
+        rows = (cols && (cols - 1) * cols >= n) ? cols - 1 : cols;
+        ch = (m->wh - (rows - 1)) / rows;
+        cw = (m->ww - (cols - 1)) / cols;
+
+        overcols = n % cols;
+        if (overcols)
+                dx = (m->ww - overcols * cw - (overcols - 1)) / 2;
+        for (i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+                cx = m->wx + (i % cols) * cw;
+                cy = m->wy + (i / cols) * ch;
+                if (overcols && i >= n - overcols) {
+                        cx += dx;
+                }
+                resize(c, cx, cy, cw - 2 * c->bw, ch - 2 * c->bw, 0);
+        }
 }
 
 void
