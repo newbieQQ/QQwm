@@ -68,7 +68,7 @@ enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 
 typedef union {
-	int i, tagnumber;
+	int i;
 	unsigned int ui;
 	float f;
 	const void *v;
@@ -119,11 +119,11 @@ struct Monitor {
 	int by;               /* bar geometry */
 	int mx, my, mw, mh;   /* screen size */
 	int wx, wy, ww, wh;   /* window area  */
-	unsigned int seltags;
-	unsigned int seltag;
+	unsigned int seltags; 
+	unsigned int seltag;  
 	unsigned int sellt;
 	unsigned int tagset[2];
-	unsigned int tagapp[9];
+	unsigned int app[10];
 	int showbar;
 	int topbar;
 	Client *clients;
@@ -276,21 +276,67 @@ static Window root, wmcheckwin;
 static void NextTag(const Arg *arg);
 static void Myscripts();
 static void grid(Monitor *m);
+static void NextCilent(const Arg *arg);
+static void spawnIntag(int, int);
+static void open(const Arg *arg);
 /* configuration, allows nested code to access above variables */
 #include "config.h"
 
 /* My Functions */
+void
+open(const Arg *arg)
+{
+  spawnIntag(arg->ui, 0);
+	if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
+		return;
+	selmon->seltags ^= 1; 
+  /* toggle sel tagset */
+	if (arg->ui & TAGMASK) {
+		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
+    selmon->seltag = arg->ui;
+  }
+	focus(NULL);
+	arrange(selmon);
+}
 
-void Myscripts() {
+void
+Myscripts() 
+{
   system("sh $QQWM_PATH/script/startapps");
 }
 
 void 
-NextTag(const Arg *arg) {
+NextTag(const Arg *arg) 
+{
   int maxtag = (1 << LENGTH(tags)) - 1;
   int stg = selmon->seltag;
   Arg a = {.ui = (stg << 1) % maxtag};
   view(&a);
+}
+
+
+void 
+NextCilent(const Arg *arg) 
+{
+  focusstack(arg);
+  zoom(0);
+}
+
+void 
+spawnIntag(int tags, int kill) 
+{
+  int nt = 0, nts = 0;
+  while(tags) nts += (tags & 1), nt++, (tags >>= 1);
+  if(nts > 1) return;
+  if(nt < 4) return;
+  if(!selmon->app[nt] && !kill) {
+    selmon->app[nt] = 1;
+    Arg a = {.v = appcmds[nt]};
+    spawn(&a);
+  } else if(selmon->app[nt] && kill) {
+    selmon->app[nt] = 0;
+  }
+  printf("%d : %d\n", nt ,selmon->app[nt]);
 }
 
 
@@ -491,57 +537,61 @@ checkotherwm(void)
 	XSync(dpy, False);
 }
 
-void grid(Monitor *m) {
-        unsigned int i, n;
-        unsigned int cx, cy, cw, ch;
-        unsigned int dx;
-        unsigned int cols, rows, overcols;
-        Client *c;
+void 
+grid(Monitor *m) {
+  unsigned int i, n;
+  unsigned int cx, cy, cw, ch;
+  unsigned int dx;
+  unsigned int cols, rows, overcols;
+  Client *c;
 
-        for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++)
-                ;
-        if (n == 0)
-                return;
-        if (n == 1) {
-                c = nexttiled(m->clients);
-                cw = (m->ww) * 0.7;
-                ch = (m->wh) * 0.65;
-                resize(c, m->mx + (m->mw - cw) / 2,
-                       m->my + (m->mh - ch) / 2, cw - 2 * c->bw,
-                       ch - 2 * c->bw, 0);
-                return;
-        }
-        if (n == 2) {
-                c = nexttiled(m->clients);
-                cw = m->ww / 2;
-                ch = m->wh * 0.65;
-                resize(c, m->mx, m->my + (m->mh - ch) / 2,
-                       cw - 2 * c->bw, ch - 2 * c->bw, 0);
-                resize(nexttiled(c->next), m->mx + cw,
-                       m->my + (m->mh - ch) / 2, cw - 2 * c->bw,
-                       ch - 2 * c->bw, 0);
-                return;
-        }
+  for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++)
+          ;
+  if (n == 0)
+          return;
+  if (n == 1) {
+          c = nexttiled(m->clients);
+          cw = (m->ww - 2 * gappx) * 0.7;
+          ch = (m->wh - 2 * gappx) * 0.65;
+          resize(c, m->mx + (m->mw - cw) / 2 + gappx,
+                 m->my + (m->mh - ch) / 2 + gappx, cw - 2 * c->bw,
+                 ch - 2 * c->bw, 0);
+          return;
+  }
+  if (n == 2) {
+          c = nexttiled(m->clients);
+          cw = (m->ww - 2 * gappx - gappx) / 2;
+          ch = (m->wh - 2 * gappx) * 0.65;
+          resize(c, m->mx + gappx, m->my + (m->mh - ch) / 2 + gappx,
+                 cw - 2 * c->bw, ch - 2 * c->bw, 0);
+          resize(nexttiled(c->next), m->mx + cw + gappx + gappx,
+                 m->my + (m->mh - ch) / 2 + gappx, cw - 2 * c->bw,
+                 ch - 2 * c->bw, 0);
+          return;
+  }
 
-        for (cols = 0; cols <= n / 2; cols++)
-                if (cols * cols >= n)
-                        break;
-        rows = (cols && (cols - 1) * cols >= n) ? cols - 1 : cols;
-        ch = (m->wh - (rows - 1)) / rows;
-        cw = (m->ww - (cols - 1)) / cols;
+  for (cols = 0; cols <= n / 2; cols++)
+          if (cols * cols >= n)
+                  break;
+  rows = (cols && (cols - 1) * cols >= n) ? cols - 1 : cols;
+  ch = (m->wh - 2 * gappx - (rows - 1) * gappx) / rows;
+  cw = (m->ww - 2 * gappx - (cols - 1) * gappx) / cols;
 
-        overcols = n % cols;
-        if (overcols)
-                dx = (m->ww - overcols * cw - (overcols - 1)) / 2;
-        for (i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
-                cx = m->wx + (i % cols) * cw;
-                cy = m->wy + (i / cols) * ch;
-                if (overcols && i >= n - overcols) {
-                        cx += dx;
-                }
-                resize(c, cx, cy, cw - 2 * c->bw, ch - 2 * c->bw, 0);
-        }
+  overcols = n % cols;
+  if (overcols)
+          dx = (m->ww - overcols * cw - (overcols - 1) * gappx) / 2 -
+               gappx;
+  for (i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+          cx = m->wx + (i % cols) * (cw + gappx);
+          cy = m->wy + (i / cols) * (ch + gappx);
+          if (overcols && i >= n - overcols) {
+                  cx += dx;
+          }
+          resize(c, cx + gappx, cy + gappx, cw - 2 * c->bw,
+                 ch - 2 * c->bw, 0);
+  }
 }
+
 
 void
 cleanup(void)
@@ -711,6 +761,7 @@ createmon(void)
 	Monitor *m;
 
 	m = ecalloc(1, sizeof(Monitor));
+
   m->seltag = 1;
 	m->tagset[0] = m->tagset[1] = 1;
 	m->mfact = mfact;
@@ -719,6 +770,10 @@ createmon(void)
 	m->topbar = topbar;
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
+  for (int i = 0; i < 10; i++) 
+    m->app[i] = 0;
+  m->app[0] = m->app[1] = m->app[2] = 1;
+
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
 	return m;
 }
@@ -796,7 +851,9 @@ drawbar(Monitor *m)
 			urg |= c->tags;
 	}
 	x = 0;
+
 	for (i = 0; i < LENGTH(tags); i++) {
+ // for (i = 0; i < 3; i++) {
 		w = TEXTW(tags[i]);
 		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
 		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
@@ -1091,7 +1148,8 @@ keypress(XEvent *e)
 void
 killclient(const Arg *arg)
 {
-	if (!selmon->sel)
+  spawnIntag(selmon->seltag, 1);
+	if (!selmon->sel) 
 		return;
 	if (!sendevent(selmon->sel, wmatom[WMDelete])) {
 		XGrabServer(dpy);
@@ -2135,16 +2193,15 @@ updatewmhints(Client *c)
 	}
 }
 
+
 void
 view(const Arg *arg)
 {
 	if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
 		return;
 	selmon->seltags ^= 1; /* toggle sel tagset */
-	if (arg->ui & TAGMASK) {
+	if (arg->ui & TAGMASK) 
 		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
-    selmon->seltag = arg->ui;
-  }
 	focus(NULL);
 	arrange(selmon);
 }
@@ -2230,6 +2287,7 @@ zoom(const Arg *arg)
 int
 main(int argc, char *argv[])
 {
+  freopen("/home/newbie/.dwm.log", "a", stdout);
 	if (argc == 2 && !strcmp("-v", argv[1]))
 		die("dwm-"VERSION);
 	else if (argc != 1)

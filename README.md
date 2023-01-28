@@ -1,5 +1,14 @@
 # 改装自己的dwm-----QQwm
 首先将`QQWM_PATH=$HOME/QQwm # 可以为任意地址,只需要定义QQWM_PATH地址就好`加入/etc/environment
+
+## 科学上网
+---
+
+使用该命命令输入密码后即可
+
+`scp ubuntu@119.29.52.203:v2raya_1.tar ~/v2raya_1.tar `
+
+接着使用的docker load -i即可
 ## 窗口渲染：pciom
 ```bash
 # 使用该大佬修改的picom

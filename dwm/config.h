@@ -11,7 +11,7 @@ static const char *fonts[]          = {
   "WenQuanYi Micro Hei:size=10:type=Regular:antialias=true:autoint=true",
   "Symbols Nerd Font:pixelsize=14:type=2048-em:antialias=true:autoint=true",
 };
-static const char dmenufont[]       = "WenQuanYi Micro Hei:size=10:type=Regular:antialias=true:autoint=true";
+static const char dmenufont[]       = "WenQuanYi Micro Hei:size=24:type=Regular:antialias=true:autoint=true";
 
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
@@ -26,7 +26,7 @@ static const char *colors[][3]      = {
 
 /* tagging */
 //static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-static const char *tags[] = { " 壹 "," 贰 "," 叁 ", "  ", "  ", "  ", "  "};
+static const char *tags[] = { " 󰎦 "," 󰎩 "," 󰎬 ", "  ", "  ", "  ", "  "};
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -40,23 +40,23 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact        = 0.6; /* factor of master area size [0.05..0.95] */
-static const int nmaster        = 1;    /* number of clients in master area */
-static const int resizehints    = 1;    /* 1 means respect size hints in tiled resizals */
-static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
+static const float mfact          = 0.6; /* factor of master area size [0.05..0.95] */
+static const int   nmaster        = 1;    /* number of clients in master area */
+static const int   resizehints    = 1;    /* 1 means respect size hints in tiled resizals */
+static const int   lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "  ",      tile },       /* first entry is default */
+  { "  ",      tile },       /* first entry is default */
 	{ " G ",      grid },       /* no layout function means floating behavior */
-	{ "  ",      NULL },       /* no layout function means floating behavior */
 	{ " M ",      monocle },    /* no layout function means floating behavior */
+//	{ "  ",      NULL },       /* no layout function means floating behavior */
 };
 
 /* key definitions */
 #define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
-	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
+	{ MODKEY,                       KEY,      open,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
@@ -68,36 +68,49 @@ static const Layout layouts[] = {
 static char dmenumon[2]          = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[]    = { "dmenu_run", "-fn", dmenufont, "-c", "-l", "8", NULL};
 static const char *termcmd[]     = { "st", NULL };
-static const char *firefoxcmd[]  = { "firefox", NULL };
-static const char *obsidiancmd[] = { "obsidian", NULL };
+//static const char *firefoxcmd[]  = { "firefox", NULL };
+//static const char *obsidiancmd[] = { "obsidian", NULL };
 static const char *flameshot[]   = { "flameshot", "gui", NULL};
+
+static const char *appcmds[50][50] = {
+    { "",                    NULL },
+    { "",                    NULL },
+    { "",                    NULL },
+    { "",                    NULL },
+    { "firefox",             NULL },
+    { "obsidian",            NULL },
+    { "netease-cloud-music", NULL },
+    { "linuxqq",             NULL },
+};
 
 static const Key keys[] = {
   /*                              键位                                */
 	/* modifier                     key        function        argument */
 	{ ControlMask|Mod1Mask,         XK_a,      spawn,          {.v = flameshot } },
+	{ Mod1Mask,                     XK_space,  spawn,          {.v = dmenucmd } },
 
-	{ ControlMask|ShiftMask,        XK_p,      spawn,          {.v = dmenucmd } },
-	{ ControlMask|ShiftMask,        XK_o,      spawn,          {.v = firefoxcmd } },
-	{ ControlMask|ShiftMask,        XK_i,      spawn,          {.v = obsidiancmd } },
+	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
+
 	{ ControlMask|ShiftMask,        XK_d,      killclient,     {0} },
 
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,               		    XK_Tab,    NextTag,	       {0} },
 
-	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
+	{ Mod1Mask,                     XK_Tab,    NextCilent,     {.i = +1 } },
+	{ Mod4Mask,             		    XK_Tab,    NextTag,	       {0} },
+
+	{ MODKEY,                       XK_h,      incnmaster,     {.i = +1 } },
+	{ MODKEY,                       XK_v,      incnmaster,     {.i = -1 } },
 
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 
-	{ MODKEY|ShiftMask,             XK_Return, zoom,           {0} },
   { MODKEY,                       XK_f,      fullscreen,      {0} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
-	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
+
+//  { MODKEY|ShiftMask,             XK_Return, zoom,           {0} },
+//  { MODKEY,                       XK_space,  setlayout,      {0} },
+//  { MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+  { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 //	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
@@ -108,11 +121,11 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
-	TAGKEYS(                        XK_4,                      3)
-	TAGKEYS(                        XK_5,                      4)
-	TAGKEYS(                        XK_6,                      5)
+	TAGKEYS(                        XK_o,                      3)
+	TAGKEYS(                        XK_i,                      4)
+	TAGKEYS(                        XK_m,                      5)
 
-	TAGKEYS(                        XK_7,                      6)
+	TAGKEYS(                        XK_p,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 
@@ -130,7 +143,7 @@ static const Button buttons[] = {
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
-	{ ClkTagBar,            0,              Button1,        view,           {0} },
+	{ ClkTagBar,            0,              Button1,        open,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },

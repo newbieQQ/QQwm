@@ -144,7 +144,7 @@ fade-delta = 10
 
 
 # Opacity of inactive windows. (0.1 - 1.0, defaults to 1.0)
-inactive-opacity = 0.8
+inactive-opacity = 1.0
 
 # Opacity of window titlebars and borders. (0.1 - 1.0, disabled by default)
 # frame-opacity = 1.0
@@ -167,9 +167,15 @@ focus-exclude = [
 # Use fixed inactive dim value, instead of adjusting according to window opacity.
 # inactive-dim-fixed = 1.0
 opacity-rule = [
+
   "85:name *= 'st' && focused",
-  "50:name *= 'st' && !focused",
-  "80:name *= 'Obsidian' && focused",
+  "85:name *= 'st' && !focused",
+
+  "85:name *= 'ranger' && focused",
+  "85:name *= 'ranger' && !focused",
+
+  "85:name *= 'Obsidian' && focused",
+  "85:name *= 'Obsidian' && !focused",
 ];
 
 #################################
