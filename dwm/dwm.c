@@ -311,7 +311,7 @@ NextTag(const Arg *arg)
   int maxtag = (1 << LENGTH(tags)) - 1;
   int stg = selmon->seltag;
   Arg a = {.ui = (stg << 1) % maxtag};
-  view(&a);
+  open(&a);
 }
 
 
