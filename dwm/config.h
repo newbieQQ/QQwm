@@ -99,7 +99,7 @@ static const Key keys[] = {
 	{ Mod1Mask,                     XK_Tab,    NextCilent,     {.i = +1 } },
 	{ Mod4Mask,             		    XK_Tab,    NextTag,	       {0} },
 
-	{ MODKEY,                       XK_h,      incnmaster,     {.i = +1 } },
+	{ MODKEY,                       XK_b,      incnmaster,     {.i = +1 } },
 	{ MODKEY,                       XK_v,      incnmaster,     {.i = -1 } },
 
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
