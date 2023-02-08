@@ -1,3 +1,17 @@
+opacity-rule = [
+
+  "85:class_g = 'st' &&  focused",
+  "85:class_g = 'st' && !focused",
+
+  "85:class_g = 'obsidian' && !focused",
+  "90:class_g = 'obsidian' &&  focused",
+
+
+  "50:class_g = 'listen1'",
+  "50:class_g = 'dwm'",
+  "80:class_g = 'weixin'",
+  "80:class_g = 'QQ'",
+];
 #################################
 #           Animations         #
 #################################
@@ -166,19 +180,6 @@ focus-exclude = [
 
 # Use fixed inactive dim value, instead of adjusting according to window opacity.
 # inactive-dim-fixed = 1.0
-opacity-rule = [
-
-  "85:class_g = 'st' &&  focused",
-  "85:class_g = 'st' && !focused",
-
-  "85:class_g = 'obsidian' && !focused",
-  "90:class_g = 'obsidian' &&  focused",
-
-
-  "50:class_g = 'listen1'",
-  "50:class_g = 'dwm'",
-  "80:class_g = 'weixin'",
-];
 
 #################################
 #           Corners             #
