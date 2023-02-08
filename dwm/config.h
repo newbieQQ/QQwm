@@ -5,11 +5,11 @@ static const unsigned int borderpx  = 0;        /* border pixel of windows */
 static const unsigned int gappx     = 12;       /* gap pixel between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
-static const int topbar             = 0;        /* 0 means bottom bar */
+static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { 
-  "monospace:size=15",
-  "WenQuanYi Micro Hei:size=15:type=Regular:antialias=true:autoint=true",
-  "Symbols Nerd Font:pixelsize=21:type=2048-em:antialias=true:autoint=true",
+  "monospace:size=12",
+  "WenQuanYi Micro Hei:size=12:type=Regular:antialias=true:autoint=true",
+  "Symbols Nerd Font:pixelsize=17:type=2048-em:antialias=true:autoint=true",
 };
 static const char dmenufont[]       = "WenQuanYi Micro Hei:size=24:type=Regular:antialias=true:autoint=true";
 
@@ -26,16 +26,16 @@ static const char *colors[][3]      = {
 
 /* tagging */
 //static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-static const char *tags[] = { " 󰎦 "," 󰎩 "," 󰎬 ", "  ", "  ", "  ", "  ", "wechat"};
+static const char *tags[] = { " 󰲠 "," 󰲢 "," 󰲤 ", " 󰈹 ", " 󰣏 ", " 󰎄 ", "  ", "  "};
 
-static const Rule rules[] = {
+static const Rule rules[] = {  
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "Firefox",  NULL,       "火狐",       1 << 8,       0,           -1 },
 	{ "st",       NULL,       NULL,       0     ,       0,           -1 },
 };
 
@@ -48,8 +48,8 @@ static const int   lockfullscreen = 1; /* 1 will force focus on the fullscreen w
 static const Layout layouts[] = {
 	/* symbol     arrange function */
   { "  ",      tile },       /* first entry is default */
-	{ " G ",      grid },       /* no layout function means floating behavior */
-	{ " M ",      monocle },    /* no layout function means floating behavior */
+	{ " 󰕰 ",      grid },       /* no layout function means floating behavior */
+	{ " 󰹞 ",      monocle },    /* no layout function means floating behavior */
 //	{ "  ",      NULL },       /* no layout function means floating behavior */
 };
 
@@ -81,7 +81,7 @@ static const char *appcmds[50][50] = {
     { "obsidian",            NULL },
     { "listen1",             NULL },
     { "linuxqq",             NULL },
-    { "wechat",              NULL },
+    { "weixin",              NULL },
 };
 
 static const Key keys[] = {
@@ -127,7 +127,7 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_m,                      5)
 
 	TAGKEYS(                        XK_p,                      6)
-	TAGKEYS(                        XK_8,                      7)
+	TAGKEYS(                        XK_w,                      7)
 	TAGKEYS(                        XK_9,                      8)
 
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },

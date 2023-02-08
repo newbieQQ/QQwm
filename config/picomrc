@@ -168,17 +168,16 @@ focus-exclude = [
 # inactive-dim-fixed = 1.0
 opacity-rule = [
 
-  "85:class_g = 'st' && focused",
+  "85:class_g = 'st' &&  focused",
   "85:class_g = 'st' && !focused",
 
-  "85:class_g = 'ranger' && focused",
-  "85:class_g = 'ranger' && !focused",
+  "85:class_g = 'obsidian' && !focused",
+  "90:class_g = 'obsidian' &&  focused",
 
-  "85:class_g = 'Obsidian' && focused",
-  "90:class_g = 'Obsidian' && !focused",
 
-  "85:name *= 'NVIM' && focused",
-  "85:name *= 'NVIM' && !focused",
+  "50:class_g = 'listen1'",
+  "50:class_g = 'dwm'",
+  "80:class_g = 'weixin'",
 ];
 
 #################################
@@ -191,10 +190,9 @@ opacity-rule = [
 corner-radius = 11;
 
 # Exclude conditions for rounded corners.
-#rounded-corners-exclude = [
-#  "window_type = 'dock'",
-#  "window_type = 'desktop'"
-#];
+rounded-corners-exclude = [
+  "class_g = 'dwm'"
+];
 
 blur: {
   method = "dual_kawase";
