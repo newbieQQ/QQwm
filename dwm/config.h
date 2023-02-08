@@ -7,9 +7,9 @@ static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 0;        /* 0 means bottom bar */
 static const char *fonts[]          = { 
-  "monospace:size=10",
-  "WenQuanYi Micro Hei:size=10:type=Regular:antialias=true:autoint=true",
-  "Symbols Nerd Font:pixelsize=14:type=2048-em:antialias=true:autoint=true",
+  "monospace:size=15",
+  "WenQuanYi Micro Hei:size=15:type=Regular:antialias=true:autoint=true",
+  "Symbols Nerd Font:pixelsize=21:type=2048-em:antialias=true:autoint=true",
 };
 static const char dmenufont[]       = "WenQuanYi Micro Hei:size=24:type=Regular:antialias=true:autoint=true";
 
@@ -26,7 +26,7 @@ static const char *colors[][3]      = {
 
 /* tagging */
 //static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-static const char *tags[] = { " 󰎦 "," 󰎩 "," 󰎬 ", "  ", "  ", "  ", "  "};
+static const char *tags[] = { " 󰎦 "," 󰎩 "," 󰎬 ", "  ", "  ", "  ", "  ", "wechat"};
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -68,9 +68,9 @@ static const Layout layouts[] = {
 static char dmenumon[2]          = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[]    = { "dmenu_run", "-fn", dmenufont, "-c", "-l", "8", NULL};
 static const char *termcmd[]     = { "st", NULL };
+static const char *flameshot[]   = { "flameshot", "gui", NULL};
 //static const char *firefoxcmd[]  = { "firefox", NULL };
 //static const char *obsidiancmd[] = { "obsidian", NULL };
-static const char *flameshot[]   = { "flameshot", "gui", NULL};
 
 static const char *appcmds[50][50] = {
     { "",                    NULL },
@@ -79,8 +79,9 @@ static const char *appcmds[50][50] = {
     { "",                    NULL },
     { "firefox",             NULL },
     { "obsidian",            NULL },
-    { "netease-cloud-music", NULL },
+    { "listen1",             NULL },
     { "linuxqq",             NULL },
+    { "wechat",              NULL },
 };
 
 static const Key keys[] = {

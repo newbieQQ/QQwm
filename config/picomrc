@@ -168,14 +168,17 @@ focus-exclude = [
 # inactive-dim-fixed = 1.0
 opacity-rule = [
 
-  "85:name *= 'st' && focused",
-  "85:name *= 'st' && !focused",
+  "85:class_g = 'st' && focused",
+  "85:class_g = 'st' && !focused",
 
-  "85:name *= 'ranger' && focused",
-  "85:name *= 'ranger' && !focused",
+  "85:class_g = 'ranger' && focused",
+  "85:class_g = 'ranger' && !focused",
 
-  "85:name *= 'Obsidian' && focused",
-  "85:name *= 'Obsidian' && !focused",
+  "85:class_g = 'Obsidian' && focused",
+  "90:class_g = 'Obsidian' && !focused",
+
+  "85:name *= 'NVIM' && focused",
+  "85:name *= 'NVIM' && !focused",
 ];
 
 #################################
