@@ -4,7 +4,7 @@ opacity-rule = [
 
   "50:class_g = 'st'",
   "50:class_g = 'listen1'",
-  "50:class_g = 'dwm'",
+  "30:class_g = 'dwm'",
   "80:class_g = 'weixin'",
   "80:class_g = 'QQ'",
 

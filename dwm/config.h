@@ -13,20 +13,22 @@ static const char *fonts[]          = {
 };
 static const char dmenufont[]       = "WenQuanYi Micro Hei:size=24:type=Regular:antialias=true:autoint=true";
 
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
+static const char col_gray1[]       = "#ffffff";
+static const char col_gray2[]       = "#000000";
+static const char col_gray3[]       = "#666666";
+static const char col_gray4[]       = "#111111";
+static const char col_gray5[]       = "#000000";
+static const char col_cyan[]        = "#222222";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
 	[SchemeSel]  = { col_gray4, col_gray1, col_cyan  },
+	[SchemeBar]  = { col_gray1, col_gray5, col_cyan  },
 };
 
 /* tagging */
 //static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-static const char *tags[] = { " 󰲠 "," 󰲢 "," 󰲤 ", " 󰈹 ", " 󰣏 ", " 󰎄 ", "  ", "  "};
+static const char *tags[] = { "󰲠","󰲢","󰲤", "󰈹", "󰣏", "󰎄", "󰘅", "󰘑"};
 
 static const Rule rules[] = {  
 	/* xprop(1):
@@ -35,8 +37,7 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       "火狐",       1 << 8,       0,           -1 },
-	{ "st",       NULL,       NULL,       0     ,       0,           -1 },
+	{ "Firefox",  NULL,     "火狐",       1 << 8,       0,           -1 },
 };
 
 /* layout(s) */
@@ -47,9 +48,9 @@ static const int   lockfullscreen = 1; /* 1 will force focus on the fullscreen w
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-  { "  ",      tile },       /* first entry is default */
-	{ " 󰕰 ",      grid },       /* no layout function means floating behavior */
-	{ " 󰹞 ",      monocle },    /* no layout function means floating behavior */
+  { "   ",      tile },       /* first entry is default */
+	{ "   󰕰",      grid },       /* no layout function means floating behavior */
+	{ "   󰹞",      monocle },    /* no layout function means floating behavior */
 //	{ "  ",      NULL },       /* no layout function means floating behavior */
 };
 
@@ -90,6 +91,8 @@ static const Key keys[] = {
 	{ ControlMask|Mod1Mask,         XK_a,      spawn,          {.v = flameshot } },
 	{ Mod1Mask,                     XK_space,  spawn,          {.v = dmenucmd } },
 
+
+	{ MODKEY,                       XK_r,      spawn,          SHCMD("ranger") },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 
 	{ ControlMask|ShiftMask,        XK_d,      killclient,     {0} },
@@ -117,7 +120,6 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-//	{ MODKEY,             		      XK_Tab,    NextTag,	       {0} },
 
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
