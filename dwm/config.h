@@ -7,9 +7,9 @@ static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { 
-  "monospace:size=12",
-  "WenQuanYi Micro Hei:size=12:type=Regular:antialias=true:autoint=true",
-  "Symbols Nerd Font:pixelsize=17:type=2048-em:antialias=true:autoint=true",
+  "monospace:size=15",
+  "WenQuanYi Micro Hei:size=15:type=Regular:antialias=true:autoint=true",
+  "Symbols Nerd Font:pixelsize=21:type=2048-em:antialias=true:autoint=true",
 };
 static const char dmenufont[]       = "WenQuanYi Micro Hei:size=24:type=Regular:antialias=true:autoint=true";
 
@@ -48,9 +48,9 @@ static const int   lockfullscreen = 1; /* 1 will force focus on the fullscreen w
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-  { "   ",      tile },       /* first entry is default */
-	{ "   󰕰",      grid },       /* no layout function means floating behavior */
-	{ "   󰹞",      monocle },    /* no layout function means floating behavior */
+  { "",      tile },       /* first entry is default */
+	{ "󰕰",      grid },       /* no layout function means floating behavior */
+	{ "󰹞",      monocle },    /* no layout function means floating behavior */
 //	{ "  ",      NULL },       /* no layout function means floating behavior */
 };
 
@@ -72,6 +72,14 @@ static const char *termcmd[]     = { "st", NULL };
 static const char *flameshot[]   = { "flameshot", "gui", NULL};
 //static const char *firefoxcmd[]  = { "firefox", NULL };
 //static const char *obsidiancmd[] = { "obsidian", NULL };
+
+static const char *AutoStartCmds[50][50] = {
+  {"fcitx5", NULL},
+  {"slstatus", NULL},
+  {"feh","--bg-fill", "https://background-1312843796.cos.ap-nanjing.myqcloud.com/2.png", NULL},
+  {"picom","--config", "$QQWM_PATH/config/picomrc", "-b", NULL},
+  {"\0", NULL}
+};
 
 static const char *appcmds[50][50] = {
     { "",                    NULL },

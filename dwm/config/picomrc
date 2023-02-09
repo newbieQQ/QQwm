@@ -3,7 +3,7 @@ opacity-rule = [
   "90:class_g = 'obsidian' &&  focused",
 
   "50:class_g = 'st'",
-  "50:class_g = 'listen1'",
+  "80:class_g = 'listen1'",
   "30:class_g = 'dwm'",
   "80:class_g = 'weixin'",
   "80:class_g = 'QQ'",

@@ -37,6 +37,7 @@ dist: clean
 	rm -rf dwm-${VERSION}
 
 install: all
+	echo "QQWM_PATH=/home/newbie/QQwm/dwm" >> /etc/environment
 	mkdir -p ${DESTDIR}${PREFIX}/bin
 	cp -f dwm ${DESTDIR}${PREFIX}/bin
 	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm
