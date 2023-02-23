@@ -322,10 +322,8 @@ fuzzymatch(void)
 static void
 match(void)
 {
-	if (fuzzy) {
-		fuzzymatch();
-		return;
-	}
+  fuzzymatch();
+  return;
 	static char **tokv = NULL;
 	static int tokn = 0;
 
